@@ -30,8 +30,15 @@ fn main() {
     println!("You chose: {}", choices[selection]);
 }
 
+fn add_user_info() {
+    // adding the username and password to the file
+    println!("adding user info")
+}
+
 fn check_for_file() {
+    // going to check to see if the file exist or not
     println!("checking for file")
+    add_user_info()
 }
 
 fn grab_user_info() {
