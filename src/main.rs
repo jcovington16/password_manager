@@ -1,4 +1,3 @@
-use serde::{Deserialize, Serialize};
 use dialoguer::Select;
 
 // start off with seeing if we need to grab a password or store one
@@ -17,9 +16,28 @@ fn main() {
     
     let selection = Select::new()
     .with_prompt("Select an option.")
+    .default(0)
     .items(&choices)
     .interact()
     .unwrap();
 
+    match choices[selection] {
+        "New Password" => check_for_file(),
+        "Grab Password" => grab_user_info(),
+        "Exit" => close_tool(),
+        &_ => todo!() // handle all other possible cases
+    }
     println!("You chose: {}", choices[selection]);
+}
+
+fn check_for_file() {
+    println!("checking for file")
+}
+
+fn grab_user_info() {
+    println!("grabbing user information")
+}
+
+fn close_tool() {
+    println!("closing file")
 }
