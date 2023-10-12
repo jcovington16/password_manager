@@ -1,0 +1,11 @@
+For each login that we want to save we need to have a list of things
+- username
+- password
+- url to the site you are logging into
+
+Here are the different things that needs to happen
+- user puts in username and password
+- we need to ensure that the password gets encrypted when stored
+- when we want to login to a site we need to be able to put in the url site
+    and then decrypt the password. 
+
