@@ -1,4 +1,6 @@
 use dialoguer::Select;
+use std::fs::File;
+use std::path::Path;
 
 // start off with seeing if we need to grab a password or store one
 // if we need to store one
@@ -30,8 +32,21 @@ fn main() {
     println!("You chose: {}", choices[selection]);
 }
 
+fn add_user_info() {
+    // adding the username and password to the file
+    println!("adding user info")
+}
+
 fn check_for_file() {
-    println!("checking for file")
+    // going to check to see if the file exist or not
+    println!("Checking if password file exists...");
+
+    if !Path::new("password_manager.txt").exists() {
+        println!("file does not exist... creating file now...");
+        create_file();
+    }
+    
+    add_user_info()
 }
 
 fn grab_user_info() {
@@ -40,4 +55,8 @@ fn grab_user_info() {
 
 fn close_tool() {
     println!("closing file")
+}
+
+fn create_file() {
+    File::create("password_manager.txt");
 }
