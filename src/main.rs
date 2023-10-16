@@ -1,18 +1,19 @@
 use dialoguer::Select;
-use std::fs::File;
-use std::path::Path;
+use magic_crypt::{new_magic_crypt, MagicCryptTrait};
 use std::collections::HashMap;
+use std::fs::File;
 use std::io;
+use std::path::Path;
 
 // start off with seeing if we need to grab a password or store one
 // if we need to store one
-    // check to see if the password file is made if not make it
-    // create an object with the url as the key
-        // ensure that the object contains username and password with thier values
-            // ensure the password is encrypted.
+// check to see if the password file is made if not make it
+// create an object with the url as the key
+// ensure that the object contains username and password with thier values
+// ensure the password is encrypted.
 // if we need to pull a password
-    // ask for the url
-        // use that url to grab the object from the file and show the object
+// ask for the url
+// use that url to grab the object from the file and show the object
 
 #[derive(Debug)]
 struct Credential {
@@ -24,19 +25,19 @@ fn main() {
     let choices = vec!["New Password", "Grab Password", "Exit"];
 
     let mut credentials = HashMap::new();
-    
+
     let selection = Select::new()
-    .with_prompt("Select an option.")
-    .default(0)
-    .items(&choices)
-    .interact()
-    .unwrap();
+        .with_prompt("Select an option.")
+        .default(0)
+        .items(&choices)
+        .interact()
+        .unwrap();
 
     match choices[selection] {
         "New Password" => check_for_file(&mut credentials),
         "Grab Password" => grab_user_info(),
         "Exit" => close_tool(),
-        &_ => todo!() // handle all other possible cases
+        &_ => todo!(), // handle all other possible cases
     }
     println!("You chose: {}", choices[selection]);
 }
@@ -45,7 +46,7 @@ fn add_user_info(credentials: &mut HashMap<String, Credential>) {
     // adding the username and password to the file
     let mut url = String::new();
     let mut username = String::new();
-    let mut password = String::new();
+    let mut password: String = String::new();
 
     println!("Enter URL: ");
     io::stdin().read_line(&mut url).unwrap();
@@ -56,10 +57,24 @@ fn add_user_info(credentials: &mut HashMap<String, Credential>) {
     println!("Enter Password: ");
     io::stdin().read_line(&mut password).unwrap();
 
+    let encrypted_password = encrypt_str(password);
+
     println!("adding user info");
-    credentials.insert(url, Credential {username, password});
+    credentials.insert(
+        url,
+        Credential {
+            username,
+            password: encrypted_password,
+        },
+    );
 
     println!("{:?}", credentials);
+}
+
+fn encrypt_str(password: String) -> String {
+    let mc = new_magic_crypt!("magickey", 256);
+    let base64 = mc.encrypt_str_to_base64(password);
+    return base64;
 }
 
 fn check_for_file(credentials: &mut HashMap<String, Credential>) {
@@ -70,7 +85,7 @@ fn check_for_file(credentials: &mut HashMap<String, Credential>) {
         println!("file does not exist... creating file now...");
         create_file();
     }
-    
+
     add_user_info(credentials)
 }
 
@@ -83,7 +98,6 @@ fn close_tool() {
 }
 
 fn create_file() {
-    File::create("password_manager.txt");
+    // return a file or add an expect in the event file couldn't be created.
+    let _ = File::create("password_manager.txt");
 }
-
-
