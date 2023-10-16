@@ -1,6 +1,8 @@
 use dialoguer::Select;
 use std::fs::File;
 use std::path::Path;
+use std::collections::HashMap;
+use std::io;
 
 // start off with seeing if we need to grab a password or store one
 // if we need to store one
@@ -12,9 +14,16 @@ use std::path::Path;
     // ask for the url
         // use that url to grab the object from the file and show the object
 
+#[derive(Debug)]
+struct Credential {
+    username: String,
+    password: String,
+}
 
 fn main() {
     let choices = vec!["New Password", "Grab Password", "Exit"];
+
+    let mut credentials = HashMap::new();
     
     let selection = Select::new()
     .with_prompt("Select an option.")
@@ -24,7 +33,7 @@ fn main() {
     .unwrap();
 
     match choices[selection] {
-        "New Password" => check_for_file(),
+        "New Password" => check_for_file(&mut credentials),
         "Grab Password" => grab_user_info(),
         "Exit" => close_tool(),
         &_ => todo!() // handle all other possible cases
@@ -32,12 +41,28 @@ fn main() {
     println!("You chose: {}", choices[selection]);
 }
 
-fn add_user_info() {
+fn add_user_info(credentials: &mut HashMap<String, Credential>) {
     // adding the username and password to the file
-    println!("adding user info")
+    let mut url = String::new();
+    let mut username = String::new();
+    let mut password = String::new();
+
+    println!("Enter URL: ");
+    io::stdin().read_line(&mut url).unwrap();
+
+    println!("Enter UserName: ");
+    io::stdin().read_line(&mut username).unwrap();
+
+    println!("Enter Password: ");
+    io::stdin().read_line(&mut password).unwrap();
+
+    println!("adding user info");
+    credentials.insert(url, Credential {username, password});
+
+    println!("{:?}", credentials);
 }
 
-fn check_for_file() {
+fn check_for_file(credentials: &mut HashMap<String, Credential>) {
     // going to check to see if the file exist or not
     println!("Checking if password file exists...");
 
@@ -46,7 +71,7 @@ fn check_for_file() {
         create_file();
     }
     
-    add_user_info()
+    add_user_info(credentials)
 }
 
 fn grab_user_info() {
@@ -60,3 +85,5 @@ fn close_tool() {
 fn create_file() {
     File::create("password_manager.txt");
 }
+
+
