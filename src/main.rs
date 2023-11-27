@@ -93,7 +93,7 @@ fn check_for_file(credentials: &mut HashMap<String, Credential>) {
 
 fn write_obj_to_file(credentials: &mut HashMap<String, Credential>) {
     let mut file = std::fs::OpenOptions::new()
-        .write(true)
+        .append(true)
         .open("password_manager.txt")
         .unwrap();
 
