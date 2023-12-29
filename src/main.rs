@@ -3,6 +3,7 @@ use magic_crypt::{new_magic_crypt, MagicCryptTrait};
 use std::collections::HashMap;
 use std::fs::File;
 use std::io;
+use std::io::Write;
 use std::path::Path;
 
 // start off with seeing if we need to grab a password or store one
@@ -86,7 +87,18 @@ fn check_for_file(credentials: &mut HashMap<String, Credential>) {
         create_file();
     }
 
-    add_user_info(credentials)
+    add_user_info(credentials);
+    write_obj_to_file(credentials);
+}
+
+fn write_obj_to_file(credentials: &mut HashMap<String, Credential>) {
+    let mut file = std::fs::OpenOptions::new()
+        .append(true)
+        .open("password_manager.txt")
+        .unwrap();
+
+    writeln!(&mut file, "{:?}", credentials).unwrap();
+    main()
 }
 
 fn grab_user_info() {
