@@ -98,6 +98,7 @@ fn write_obj_to_file(credentials: &mut HashMap<String, Credential>) {
         .unwrap();
 
     writeln!(&mut file, "{:?}", credentials).unwrap();
+    main()
 }
 
 fn grab_user_info() {
