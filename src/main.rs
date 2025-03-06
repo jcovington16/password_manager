@@ -5,6 +5,7 @@ use std::fs::File;
 use std::io;
 use std::io::Write;
 use std::path::Path;
+use password_manager::{add_user_info_with_input, Credential, encrypt_str};
 
 // start off with seeing if we need to grab a password or store one
 // if we need to store one
@@ -16,11 +17,6 @@ use std::path::Path;
 // ask for the url
 // use that url to grab the object from the file and show the object
 
-#[derive(Debug)]
-struct Credential {
-    username: String,
-    password: String,
-}
 
 fn main() {
     let choices = vec!["New Password", "Grab Password", "Exit"];
@@ -58,7 +54,9 @@ fn add_user_info(credentials: &mut HashMap<String, Credential>) {
     println!("Enter Password: ");
     io::stdin().read_line(&mut password).unwrap();
 
-    let encrypted_password = encrypt_str(password);
+    let encrypted_password = encrypt_str(&password);
+
+    add_user_info_with_input(credentials, url.trim(), username.trim(), &password.trim());
 
     println!("adding user info");
     credentials.insert(
@@ -72,11 +70,6 @@ fn add_user_info(credentials: &mut HashMap<String, Credential>) {
     println!("{:?}", credentials);
 }
 
-fn encrypt_str(password: String) -> String {
-    let mc = new_magic_crypt!("magickey", 256);
-    let base64 = mc.encrypt_str_to_base64(password);
-    return base64;
-}
 
 fn check_for_file(credentials: &mut HashMap<String, Credential>) {
     // going to check to see if the file exist or not
